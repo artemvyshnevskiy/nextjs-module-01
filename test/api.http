@@ -1,0 +1,14 @@
+### Список рецептов
+GET http://localhost:3000/api/recipes
+
+### Рецепт по ID 1
+GET http://localhost:3000/api/recipes/1
+
+### Рецепт по ID 2
+GET http://localhost:3000/api/recipes/2
+
+### Список ингредиентов
+GET http://localhost:3000/api/ingredients
+
+### Список ингредиентов для рецепта
+GET http://localhost:3000/api/ingredients/1
