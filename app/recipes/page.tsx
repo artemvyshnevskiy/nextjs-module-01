@@ -7,8 +7,10 @@ export const metadata: Metadata = {
   description: "Популярные блюда. Список рецептов. Обзоры и подробные инструкции.",
 }
 
+export const dynamic = "force-dynamic"
+
 async function fetchRecipes() {
-  const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/recipes")
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes`)
 
   if (!response.ok) {
     throw new Error("Не удалось получить список рецептов")

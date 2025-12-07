@@ -7,28 +7,26 @@ export const metadata: Metadata = {
   description: "Рецепты популярных блюд. Инструкции и советы.",
 }
 
+export const dynamic = "force-dynamic"
+
 async function fetchMainRecipe() {
-  const mainRecipe = process.env.NEXT_PUBLIC_MAIN_RECIPE_ID
-  if (typeof mainRecipe === "undefined") {
-    throw new Error("Рецепт не задан. Проверьте переменные окружения.")
+  const mainRecipeId = process.env.NEXT_PUBLIC_MAIN_RECIPE_ID
+
+  if (!mainRecipeId) {
+    return null
   }
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/${mainRecipe}`)
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/${mainRecipeId}`)
 
   if (!response.ok) {
-    throw new Error("Не удалось получить рецепт по id.")
+    return null
   }
 
   return await response.json()
 }
 
 export default async function Home() {
-  let mainRecipe
-  try {
-    mainRecipe = await fetchMainRecipe()
-  } catch (error) {
-    console.warn(error)
-  }
+  const mainRecipe = await fetchMainRecipe()
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">

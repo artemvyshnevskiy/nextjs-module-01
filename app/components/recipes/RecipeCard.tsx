@@ -24,6 +24,7 @@ export default function RecipeCard({ id, title, description, image }: RecipeCard
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [isLoadingIngredients, setIsLoadingIngredients] = useState(true)
   const [ingredientsShown, setIngredientsShown] = useState(false)
+  const [ingredientsFetched, setIngredientsFetched] = useState(false)
 
   async function fetchIngredients() {
     setIsLoadingIngredients(true)
@@ -46,8 +47,9 @@ export default function RecipeCard({ id, title, description, image }: RecipeCard
 
   function showIngredients() {
     setIngredientsShown(true)
-    if (ingredients.length === 0) {
+    if (!ingredientsFetched) {
       fetchIngredients()
+      setIngredientsFetched(true)
     }
   }
 
@@ -73,7 +75,7 @@ export default function RecipeCard({ id, title, description, image }: RecipeCard
           <h2 className="text-xl font-semibold mb-2">
             <Link href={`/recipes/${id}`}>{title}</Link>
           </h2>
-          <p className="text-sm text-gray-700">{description}</p>
+          <p className="text-sm text-gray-700 mb-2">{description}</p>
           {!ingredientsShown ? (
             <button
               className="text-blue-500 hover:text-blue-400 text-sm cursor-pointer"
@@ -83,7 +85,7 @@ export default function RecipeCard({ id, title, description, image }: RecipeCard
             </button>
           ) : (
             <>
-              <ul className="text-sm text-gray-500 mt-4 flex flex-col gap-1">
+              <ul className="text-sm text-gray-500 flex flex-col gap-1">
                 {isLoadingIngredients
                   ? Array(4)
                       .fill(null)
