@@ -1,21 +1,64 @@
-import { ingredients } from "../route"
 import { NextResponse } from "next/server"
+import { prisma } from "@/app/libs/prisma"
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const recipeId = parseInt(id, 10)
+  const ingredientId = parseInt(id, 10)
 
-  if (isNaN(recipeId)) {
+  if (isNaN(ingredientId)) {
     return NextResponse.json({ error: "Невалидный id" }, { status: 400 })
   }
 
-  const recipeExists = ingredients.some((item) => item.recipeId === recipeId)
-  if (!recipeExists) {
-    return NextResponse.json({ error: `Ингредиенты для рецепта ${id} не найдены` }, { status: 404 })
+  try {
+    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId } })
+
+    if (!ingredient) {
+      return NextResponse.json({ error: `Ингредиент не найден` }, { status: 404 })
+    }
+
+    return NextResponse.json(ingredient)
+  } catch (error) {
+    return NextResponse.json({ error: "Не удалось получить ингредиент", details: error }, { status: 500 })
+  }
+}
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const ingredientId = parseInt(id, 10)
+
+  if (isNaN(ingredientId)) {
+    return NextResponse.json({ error: "Невалидный id" }, { status: 400 })
   }
 
-  const recipeIngredients = ingredients.filter((item) => item.recipeId === recipeId)
+  const { name, amount } = await request.json()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return NextResponse.json(recipeIngredients.map(({ recipeId, ...rest }) => rest))
+  try {
+    const updatedIngredient = await prisma.ingredient.update({
+      where: { id: ingredientId },
+      data: { name, amount },
+    })
+
+    return NextResponse.json(updatedIngredient, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ error: "Не удалось обновить ингредиент", details: error }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const ingredientId = parseInt(id, 10)
+
+  if (isNaN(ingredientId)) {
+    return NextResponse.json({ error: "Невалидный id" }, { status: 400 })
+  }
+
+  try {
+    const deletedIngredient = await prisma.ingredient.delete({
+      where: { id: ingredientId },
+    })
+
+    return NextResponse.json(deletedIngredient, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ error: "Не удалось удалить ингредиент", details: error }, { status: 500 })
+  }
 }
