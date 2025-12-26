@@ -39,9 +39,7 @@ export default async function Home() {
             <RecipeCard {...mainRecipe} />
           </ul>
         </>
-      ) : (
-        ""
-      )}
+      ) : null}
 
       <div className="text-center mt-6">
         <Link

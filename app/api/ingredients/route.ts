@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/app/libs/prisma"
+import z from "zod"
 
 export async function GET() {
   try {
@@ -11,8 +12,21 @@ export async function GET() {
   }
 }
 
+const createIngredientSchema = z.object({
+  name: z.string().trim().min(1, "Название ингредиента не может быть пустым"),
+  amount: z.string().trim().min(1, "Количество ингредиента не может быть пустым"),
+  recipeId: z.coerce.number().int().positive(),
+})
+
 export async function POST(request: Request) {
-  const { name, amount, recipeId } = await request.json()
+  const body = await request.json()
+  const parsed = createIngredientSchema.safeParse(body)
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Не удалось создать ингредиент", details: z.treeifyError(parsed.error) }, { status: 400 })
+  }
+
+  const { name, amount, recipeId } = parsed.data
 
   try {
     const newIngredient = await prisma.ingredient.create({

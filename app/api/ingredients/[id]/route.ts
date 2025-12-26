@@ -10,7 +10,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 
   try {
-    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId } })
+    const ingredient = await prisma.ingredient.findUnique({ where: { id: ingredientId } })
 
     if (!ingredient) {
       return NextResponse.json({ error: `Ингредиент не найден` }, { status: 404 })

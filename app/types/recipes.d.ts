@@ -13,6 +13,6 @@ declare global {
   type RecipeWithRelations = Recipe & {
     chef?: Chef
     tags?: RecipeTagItem[]
-    ingredients?: Ingredient
+    ingredients?: Ingredient[]
   }
 }

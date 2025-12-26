@@ -23,7 +23,7 @@ export default function RecipeCard({ id, title, description, imageUrl, chef, tag
         setLiked(true)
       })
     }
-  })
+  }, [likeStorageId])
 
   async function fetchIngredients() {
     setIsLoadingIngredients(true)
