@@ -1,36 +1,35 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
-import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline"
+import { useEffect, useState } from "react"
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
+import { Ingredient } from "@/app/generated/prisma"
 
-export interface RecipeCardProps {
-  id: number
-  title: string
-  description: string
-  image: string
-}
-
-interface Ingredient {
-  id: number
-  name: string
-  amount: string
-}
-
-export default function RecipeCard({ id, title, description, image }: RecipeCardProps) {
+export default function RecipeCard({ id, title, description, imageUrl, chef, tags }: RecipeWithRelations) {
   const [liked, setLiked] = useState(false)
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [isLoadingIngredients, setIsLoadingIngredients] = useState(true)
   const [ingredientsShown, setIngredientsShown] = useState(false)
   const [ingredientsFetched, setIngredientsFetched] = useState(false)
 
+  const likeStorageId = `recipe-liked-${id}`
+
+  useEffect(() => {
+    const likeSaved = localStorage.getItem(likeStorageId)
+
+    if (likeSaved) {
+      queueMicrotask(() => {
+        setLiked(true)
+      })
+    }
+  }, [likeStorageId])
+
   async function fetchIngredients() {
     setIsLoadingIngredients(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ingredients/${id}`)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}/ingredients`)
 
       if (!response.ok) {
         throw new Error("Не удалось загрузить ингредиенты")
@@ -57,19 +56,50 @@ export default function RecipeCard({ id, title, description, image }: RecipeCard
     setIngredientsShown(false)
   }
 
+  const toggleLike = () => {
+    const newLiked = !liked
+    setLiked(newLiked)
+
+    if (newLiked) {
+      localStorage.setItem(likeStorageId, "1")
+    } else {
+      localStorage.removeItem(likeStorageId)
+    }
+  }
+
   return (
     <li
       className="rounded-lg overflow-hidden shadow flex flex-col"
       key={id}
     >
-      <Link href={`/recipes/${id}`}>
-        <Image
-          src={image}
-          alt={title}
-          width="640"
-          height="427"
-        />
-      </Link>
+      <div className="relative">
+        <Link href={`/recipes/${id}`}>
+          <Image
+            src={imageUrl}
+            alt={title}
+            width="640"
+            height="427"
+          />
+        </Link>
+        <button
+          onClick={toggleLike}
+          className="absolute top-2 end-2 p-2 cursor-pointer"
+        >
+          {liked ? (
+            <SolidHeartIcon
+              width="24"
+              height="24"
+              className="text-red-500"
+            />
+          ) : (
+            <SolidHeartIcon
+              width="24"
+              height="24"
+              className="text-white"
+            />
+          )}
+        </button>
+      </div>
       <div className="p-4 flex flex-col justify-between gap-4 grow">
         <div>
           <h2 className="text-xl font-semibold mb-2">
@@ -91,7 +121,7 @@ export default function RecipeCard({ id, title, description, image }: RecipeCard
                       .fill(null)
                       .map((item, i) => (
                         <li key={i}>
-                          <span className="bg-gray-300 block w-full h-5 rounded-sm animate-pulse"></span>
+                          <span className="bg-gray-100 block w-full h-5 rounded-sm animate-pulse"></span>
                         </li>
                       ))
                   : ingredients.map((ingredient) => (
@@ -112,30 +142,21 @@ export default function RecipeCard({ id, title, description, image }: RecipeCard
             </>
           )}
         </div>
-        <button
-          onClick={() => setLiked(!liked)}
-          className="flex items-center gap-1 text-sm cursor-pointer"
-        >
-          {liked ? (
-            <>
-              <SolidHeartIcon
-                width="24"
-                height="24"
-                className="text-red-500"
-              />
-              <span>Вы поставили лайк!</span>
-            </>
-          ) : (
-            <>
-              <OutlineHeartIcon
-                width="24"
-                height="24"
-                className="text-gray-500"
-              />
-              <span>Поставить лайк</span>
-            </>
+        <div className="flex flex-col gap-2">
+          {chef && <div className="text-sm text-gray-600">{chef.name}</div>}
+          {tags && tags.length > 0 && (
+            <ul className="flex gap-2 flex-wrap">
+              {tags.map((tag) => (
+                <li
+                  key={tag.tagId}
+                  className="px-2 py-1 text-sm rounded bg-gray-100"
+                >
+                  #{tag.tag.name}
+                </li>
+              ))}
+            </ul>
           )}
-        </button>
+        </div>
       </div>
     </li>
   )

@@ -1,14 +1,70 @@
 ### Список рецептов
 GET http://localhost:3000/api/recipes
 
-### Рецепт по ID 1
+### Рецепт
 GET http://localhost:3000/api/recipes/1
 
-### Рецепт по ID 2
-GET http://localhost:3000/api/recipes/2
+### Рецепт c ингредиентами
+GET http://localhost:3000/api/recipes/1?expand=ingredients
+
+### Рецепт c ингредиентами, автором и тегами
+GET http://localhost:3000/api/recipes/1?expand=ingredients,chef,tags
+
+### Обновление рецепта (PATCH)
+PATCH http://localhost:3000/api/recipes/1
+Content-Type: application/json
+
+{
+  "title": "Спагетти Карбонара",
+  "description": "Классическая итальянская паста с беконом и сыром"
+}
+
+### Создание нового рецепта (POST)
+POST http://localhost:3000/api/recipes
+Content-Type: application/json
+
+{
+  "title": "Омлет",
+  "description": "Классический воздушный омлет на сковороде",
+  "imageUrl": "/images/omelette.jpg",
+  "chefId": 1,
+  "ingredients": [
+    { "name": "Яйца", "amount": "3 шт" },
+    { "name": "Молоко", "amount": "50 мл" },
+    { "name": "Сливочное масло", "amount": "10 г" }
+  ]
+}
+
+### Удаление рецепта (DELETE)
+DELETE http://localhost:3000/api/recipes/4
 
 ### Список ингредиентов
 GET http://localhost:3000/api/ingredients
 
-### Список ингредиентов для рецепта
+### Ингредиент
 GET http://localhost:3000/api/ingredients/1
+
+### Создание нового ингредиента (POST)
+POST http://localhost:3000/api/ingredients
+Content-Type: application/json
+
+{
+  "name": "Соль",
+  "amount": "по вкусу",
+  "recipeId": 1
+}
+
+### Обновление ингредиента (PATCH)
+PATCH http://localhost:3000/api/ingredients/13
+Content-Type: application/json
+
+{
+  "name": "Масло оливковое",
+  "amount": "1 ст. ложка"
+}
+
+### Удаление ингредиента (DELETE)
+DELETE http://localhost:3000/api/ingredients/13
+
+### Список ингредиентов для рецепта
+GET http://localhost:3000/api/recipes/1/ingredients

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic"
 
 async function fetchRecipes() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes`)
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes?expand=tags,chef`)
 
   if (!response.ok) {
     throw new Error("Не удалось получить список рецептов")
@@ -23,17 +23,9 @@ export default async function RecipesPage() {
   const recipes = await fetchRecipes()
 
   return (
-    <div className="container mx-auto p-4">
+    <>
       <h1 className="text-3xl font-bold mb-6 text-center">Рецепты</h1>
       <RecipeList recipes={recipes} />
-      <div className="text-center mt-6">
-        <Link
-          href="/"
-          className="text-blue-500 hover:text-blue-400"
-        >
-          На главную
-        </Link>
-      </div>
-    </div>
+    </>
   )
 }

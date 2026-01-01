@@ -5,6 +5,7 @@ export const schema = z.object({
   API_TOKEN: z.string().length(10),
   NEXT_PUBLIC_MAIN_RECIPE_ID: z.coerce.number().optional(),
   //EXAMPLE: z.enum(["DEMO", "ON", "OFF"]).optional(),
+  DATABASE_URL: z.string(),
 })
 
 async function main() {
