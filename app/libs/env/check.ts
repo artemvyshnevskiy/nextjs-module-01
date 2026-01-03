@@ -3,7 +3,18 @@ import z, { ZodError } from "zod"
 export const schema = z.object({
   NEXT_PUBLIC_API_URL: z.string(),
   API_TOKEN: z.string().length(10),
-  NEXT_PUBLIC_MAIN_RECIPE_ID: z.coerce.number().optional(),
+  //NEXT_PUBLIC_FEATURED_RECIPE_IDS: z.coerce.number().optional(),
+  NEXT_PUBLIC_FEATURED_RECIPE_IDS: z
+    .preprocess((value) => {
+      if (typeof value !== "string") return value
+
+      try {
+        return JSON.parse(value)
+      } catch {
+        return value
+      }
+    }, z.array(z.number().int().positive()))
+    .optional(),
   //EXAMPLE: z.enum(["DEMO", "ON", "OFF"]).optional(),
   DATABASE_URL: z.string(),
 })
