@@ -1,9 +1,7 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
-import { FireIcon } from "@heroicons/react/20/solid"
-import Link from "next/link"
-import Menu from "./components/shared/Menu"
+import MainMenu from "./components/shared/MainMenu"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,17 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
-        <header className="bg-linear-to-r from-orange-500 to-red-500">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <Link
-              href="/"
-              className="text-xl text-white flex items-center gap-2"
-            >
-              <FireIcon className="w-5 h-5" />
-              Книга рецептов
-            </Link>
-            <Menu />
-          </div>
+        <header className="shadow-lg">
+          <MainMenu />
         </header>
         <main className="grow">
           <div className="container mx-auto p-4">{children}</div>
