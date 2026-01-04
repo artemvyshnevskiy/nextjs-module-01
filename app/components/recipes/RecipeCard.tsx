@@ -69,7 +69,7 @@ export default function RecipeCard({ id, title, description, imageUrl, chef, tag
 
   return (
     <li
-      className="rounded-lg overflow-hidden shadow flex flex-col"
+      className="rounded-lg overflow-hidden shadow flex flex-col dark:bg-gray-800"
       key={id}
     >
       <div className="relative">
@@ -105,7 +105,7 @@ export default function RecipeCard({ id, title, description, imageUrl, chef, tag
           <h2 className="text-xl font-semibold mb-2">
             <Link href={`/recipes/${id}`}>{title}</Link>
           </h2>
-          <p className="text-sm text-gray-700 mb-2">{description}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-400 mb-2">{description}</p>
           {!ingredientsShown ? (
             <button
               className="text-blue-500 hover:text-blue-400 text-sm cursor-pointer"
@@ -143,13 +143,13 @@ export default function RecipeCard({ id, title, description, imageUrl, chef, tag
           )}
         </div>
         <div className="flex flex-col gap-2">
-          {chef && <div className="text-sm text-gray-600">{chef.name}</div>}
+          {chef && <div className="text-sm text-gray-600 dark:text-gray-500">{chef.name}</div>}
           {tags && tags.length > 0 && (
             <ul className="flex gap-2 flex-wrap">
               {tags.map((tag) => (
                 <li
                   key={tag.tagId}
-                  className="px-2 py-1 text-sm rounded bg-gray-100"
+                  className="px-2 py-1 text-sm rounded bg-gray-100 dark:bg-gray-700"
                 >
                   #{tag.tag.name}
                 </li>

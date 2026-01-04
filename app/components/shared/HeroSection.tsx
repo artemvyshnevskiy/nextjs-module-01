@@ -85,7 +85,7 @@ export default function HeroSection({
               {featuredRecipes.map((recipe) => (
                 <li
                   key={recipe.id}
-                  className="rounded-lg overflow-hidden shadow border border-gray-100 bg-white"
+                  className="rounded-lg overflow-hidden shadow bg-white dark:bg-gray-800"
                 >
                   <Link href={`/recipes/${recipe.id}`}>
                     <Image
@@ -100,7 +100,7 @@ export default function HeroSection({
                       <h3 className="text-lg font-semibold">
                         <Link href={`/recipes/${recipe.id}`}>{recipe.title}</Link>
                       </h3>
-                      <p className="text-sm text-gray-700">{recipe.description}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-400">{recipe.description}</p>
                     </div>
                   </div>
                 </li>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react"
+import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle, DarkThemeToggle } from "flowbite-react"
 import Link from "next/link"
 import Image from "next/image"
 import Logo from "@/app/icon.png"
@@ -26,7 +26,8 @@ export default function MainMenu() {
         <span className="self-center whitespace-nowrap sm:text-xl font-semibold dark:text-white">Книга рецептов</span>
       </NavbarBrand>
       <div className="flex md:order-2">
-        <Button>Get started</Button>
+        <Button>Войти</Button>
+        <DarkThemeToggle className="ms-2" />
         <NavbarToggle />
       </div>
       <NavbarCollapse>
