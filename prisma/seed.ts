@@ -9,6 +9,7 @@ const chefs = [
         title: "Спагетти Карбонара",
         description: "Классическая итальянская паста.",
         imageUrl: "/images/carbonara.jpg",
+        rating: 4.85,
         tagNames: ["итальянская кухня", "паста", "классика", "быстро"],
         ingredients: [
           { name: "Спагетти", amount: "200 г" },
@@ -27,6 +28,7 @@ const chefs = [
         title: "Пицца Маргарита",
         description: "Свежая пицца с помидорами, базиликом и моцареллой.",
         imageUrl: "/images/pizza.jpg",
+        rating: null,
         tagNames: ["итальянская кухня", "пицца", "классика"],
         ingredients: [
           { name: "Тесто", amount: "1 шт" },
@@ -45,6 +47,7 @@ const chefs = [
         title: "Салат Цезарь",
         description: "Салат с салатом романо, гренками и соусом Цезарь.",
         imageUrl: "/images/salad.jpg",
+        rating: 4.3,
         tagNames: ["салат", "классика", "быстро"],
         ingredients: [
           { name: "Салат романо", amount: "100 г" },
@@ -79,6 +82,7 @@ async function main() {
             title: recipe.title,
             description: recipe.description,
             imageUrl: recipe.imageUrl,
+            rating: recipe.rating,
 
             ingredients: { create: recipe.ingredients },
 

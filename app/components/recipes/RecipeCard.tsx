@@ -5,8 +5,9 @@ import { useEffect, useState } from "react"
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { Ingredient } from "@/app/generated/prisma"
+import Rating from "./Rating"
 
-export default function RecipeCard({ id, title, description, imageUrl, chef, tags }: RecipeWithRelations) {
+export default function RecipeCard({ id, title, description, imageUrl, rating, chef, tags }: RecipeWithRelations) {
   const [liked, setLiked] = useState(false)
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [isLoadingIngredients, setIsLoadingIngredients] = useState(true)
@@ -105,6 +106,9 @@ export default function RecipeCard({ id, title, description, imageUrl, chef, tag
           <h2 className="text-xl font-semibold mb-2">
             <Link href={`/recipes/${id}`}>{title}</Link>
           </h2>
+          <div className="mb-2">
+            <Rating value={rating} />
+          </div>
           <p className="text-sm text-gray-700 dark:text-gray-400 mb-2">{description}</p>
           {!ingredientsShown ? (
             <button

@@ -26,6 +26,7 @@ model Recipe {
   description String
   imageUrl    String
   chefId      Int
+  rating      Decimal?     @db.Decimal(3, 2)
   ingredients Ingredient[]
   tags        RecipeTag[]
 
