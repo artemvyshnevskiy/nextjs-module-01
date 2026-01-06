@@ -26,7 +26,7 @@ export default function MainMenu() {
         <span className="self-center whitespace-nowrap sm:text-xl font-semibold dark:text-white">Книга рецептов</span>
       </NavbarBrand>
       <div className="flex md:order-2">
-        <Button>Войти</Button>
+        <Button href="/auth/login">Войти</Button>
         <DarkThemeToggle className="ms-2" />
         <NavbarToggle />
       </div>

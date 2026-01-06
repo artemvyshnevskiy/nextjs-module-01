@@ -36,7 +36,7 @@ export default function RootLayout({
         <header className="shadow-lg">
           <MainMenu />
         </header>
-        <main className="grow">
+        <main className="grow flex">
           <div className="container mx-auto p-4">{children}</div>
         </main>
         <footer className="p-4 text-center text-sm bg-neutral-700 text-neutral-100 dark:bg-gray-800 dark:text-gray-400">
