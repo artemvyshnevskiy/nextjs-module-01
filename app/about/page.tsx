@@ -1,14 +1,22 @@
 import { ArrowRightIcon } from "@heroicons/react/20/solid"
 import { Metadata } from "next"
+import { getServerSession } from "next-auth"
 import Image from "next/image"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "О нас",
   description: "Рассказываем о нашем проете",
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const session = await getServerSession()
+
+  if (!session) {
+    redirect("/auth/login?callbackUrl=/about")
+  }
+
   return (
     <section className="bg-white dark:bg-gray-800">
       <div className="gap-8 items-center py-8 px-4 mx-auto max-w-7xl xl:gap-16 md:grid md:grid-cols-2 sm:py-16 lg:px-6">

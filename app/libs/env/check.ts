@@ -17,6 +17,10 @@ export const schema = z.object({
     .optional(),
   //EXAMPLE: z.enum(["DEMO", "ON", "OFF"]).optional(),
   DATABASE_URL: z.string(),
+  NEXTAUTH_SECRET: z
+    .string()
+    .length(44)
+    .regex(/^[A-Za-z0-9+/]+={0,2}$/),
 })
 
 async function main() {

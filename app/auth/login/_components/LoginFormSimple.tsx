@@ -1,33 +1,57 @@
 "use client"
 
 import Link from "next/link"
+import { ChangeEvent, FormEvent, useState } from "react"
 import { TextInput, Label, Checkbox, Button, HelperText } from "flowbite-react"
 import { loginFormSchema, loginFormSchemaType } from "../_model/schema"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 
-export default function LoginForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<loginFormSchemaType>({
-    resolver: zodResolver(loginFormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+export default function LoginFormSimple() {
+  const [formData, setFormData] = useState<loginFormSchemaType>({
+    email: "",
+    password: "",
   })
 
-  const onSubmit = (data: loginFormSchemaType) => {
-    console.log(data)
+  const [errors, setErrors] = useState<Partial<Record<keyof loginFormSchemaType, string | undefined>>>({})
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }))
+
+    setErrors((prev) => ({
+      ...prev,
+      [id]: undefined,
+    }))
+  }
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault()
+
+    const result = loginFormSchema.safeParse(formData)
+
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof loginFormSchemaType, string | undefined>> = {}
+      for (const issue of result.error.issues) {
+        const field = issue.path[0] as keyof loginFormSchemaType
+        if (!fieldErrors[field]) {
+          fieldErrors[field] = issue.message
+        }
+      }
+
+      setErrors(fieldErrors)
+      return
+    }
+
+    console.log(formData)
   }
 
   return (
     <form
       className="flex flex-col gap-4 md:gap-6"
       action="#"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit}
     >
       <div>
         <div className="mb-2">
@@ -35,13 +59,15 @@ export default function LoginForm() {
         </div>
         <TextInput
           type="email"
+          name="email"
           id="email"
           placeholder="name@company.com"
           required
-          {...register("email")}
+          value={formData.email}
+          onChange={handleChange}
           color={errors.email ? "failure" : undefined}
         />
-        {errors.email && <HelperText color="failure">{errors.email.message}</HelperText>}
+        {errors.email && <HelperText color="failure">{errors.email}</HelperText>}
       </div>
 
       <div>
@@ -50,13 +76,15 @@ export default function LoginForm() {
         </div>
         <TextInput
           type="password"
+          name="password"
           id="password"
           placeholder="••••••••"
           required
-          {...register("password")}
+          value={formData.password}
+          onChange={handleChange}
           color={errors.password ? "failure" : undefined}
         />
-        {errors.password && <HelperText color="failure">{errors.password.message}</HelperText>}
+        {errors.password && <HelperText color="failure">{errors.password}</HelperText>}
       </div>
 
       <div className="flex items-center gap-2">

@@ -1,73 +1,80 @@
 "use client"
 
 import Link from "next/link"
-import { ChangeEvent, FormEvent, useState } from "react"
 import { TextInput, Label, Checkbox, Button, HelperText } from "flowbite-react"
 import { loginFormSchema, loginFormSchemaType } from "../_model/schema"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect, useState } from "react"
+import { signIn, useSession } from "next-auth/react"
+import { Alert } from "flowbite-react"
+import { useRouter } from "next/navigation"
 
-export default function LoginForm() {
-  const [formData, setFormData] = useState<loginFormSchemaType>({
-    email: "",
-    password: "",
+type LoginFormProps = {
+  callbackUrl: string
+}
+
+export default function LoginForm({ callbackUrl }: LoginFormProps) {
+  const [authError, setAuthError] = useState<string | null>(null)
+  const router = useRouter()
+  const { data: session } = useSession()
+
+  useEffect(() => {
+    if (session) {
+      router.push(callbackUrl)
+    }
+  }, [callbackUrl, router, session])
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<loginFormSchemaType>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: "test@example.local",
+      password: "",
+    },
   })
 
-  const [errors, setErrors] = useState<Partial<Record<keyof loginFormSchemaType, string | undefined>>>({})
+  const onSubmit = async (data: loginFormSchemaType) => {
+    setAuthError(null)
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }))
+    const { email, password } = data
+    const result = await signIn("credentials", { email, password, redirect: false, callbackUrl: callbackUrl })
 
-    setErrors((prev) => ({
-      ...prev,
-      [id]: undefined,
-    }))
-  }
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-
-    const result = loginFormSchema.safeParse(formData)
-
-    if (!result.success) {
-      const fieldErrors: Partial<Record<keyof loginFormSchemaType, string | undefined>> = {}
-      for (const issue of result.error.issues) {
-        const field = issue.path[0] as keyof loginFormSchemaType
-        if (!fieldErrors[field]) {
-          fieldErrors[field] = issue.message
-        }
-      }
-
-      setErrors(fieldErrors)
-      return
+    if (result?.ok) {
+      router.push(callbackUrl)
+    } else {
+      setAuthError("Неверная пара email/пароль. Попробуйте снова")
     }
-
-    console.log(formData)
   }
 
   return (
     <form
       className="flex flex-col gap-4 md:gap-6"
       action="#"
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
     >
+      {authError && (
+        <Alert color="failure">
+          <span className="font-medium">{authError}</span>
+        </Alert>
+      )}
+
       <div>
         <div className="mb-2">
           <Label htmlFor="email">Email</Label>
         </div>
         <TextInput
           type="email"
-          name="email"
           id="email"
           placeholder="name@company.com"
           required
-          value={formData.email}
-          onChange={handleChange}
+          {...register("email")}
           color={errors.email ? "failure" : undefined}
         />
-        {errors.email && <HelperText color="failure">{errors.email}</HelperText>}
+        {errors.email && <HelperText color="failure">{errors.email.message}</HelperText>}
       </div>
 
       <div>
@@ -76,15 +83,13 @@ export default function LoginForm() {
         </div>
         <TextInput
           type="password"
-          name="password"
           id="password"
           placeholder="••••••••"
           required
-          value={formData.password}
-          onChange={handleChange}
+          {...register("password")}
           color={errors.password ? "failure" : undefined}
         />
-        {errors.password && <HelperText color="failure">{errors.password}</HelperText>}
+        {errors.password && <HelperText color="failure">{errors.password.message}</HelperText>}
       </div>
 
       <div className="flex items-center gap-2">

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import MainMenu from "./components/shared/MainMenu"
 import { ThemeModeScript } from "flowbite-react"
+import Providers from "./components/shared/Providers"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,15 +34,17 @@ export default function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
-        <header className="shadow-lg">
-          <MainMenu />
-        </header>
-        <main className="grow flex">
-          <div className="container mx-auto p-4">{children}</div>
-        </main>
-        <footer className="p-4 text-center text-sm bg-neutral-700 text-neutral-100 dark:bg-gray-800 dark:text-gray-400">
-          &copy; {new Date().getFullYear()} Книга рецептов. Все права защищены
-        </footer>
+        <Providers>
+          <header className="shadow-lg">
+            <MainMenu />
+          </header>
+          <main className="grow flex">
+            <div className="container mx-auto p-4">{children}</div>
+          </main>
+          <footer className="p-4 text-center text-sm bg-neutral-700 text-neutral-100 dark:bg-gray-800 dark:text-gray-400">
+            &copy; {new Date().getFullYear()} Книга рецептов. Все права защищены
+          </footer>
+        </Providers>
       </body>
     </html>
   )
